@@ -1385,6 +1385,36 @@ namespace matplot {
                                  const std::vector<std::vector<double>> &Z,
                                  std::string_view line_spec);
 
+        /// Patch grid
+        patch_handle patch(const std::vector<std::vector<double>> &X,
+                                 const std::vector<std::vector<double>> &Y,
+                                 const std::vector<std::vector<double>> &Z,
+                           std::string_view line_spec = "");
+
+        /// Patch custom data
+        patch_handle patch(const vector_1d &x, const vector_1d &y,
+                           const vector_1d &z,
+                           const std::vector<std::vector<int>> &faces,
+                           std::string_view line_spec = "");
+
+        /// Isocontour filled
+        isocontour_handle isocontour(const std::vector<std::vector<double>> &X,
+                                const std::vector<std::vector<double>> &Y,
+                                const std::vector<std::vector<double>> &Z,
+                                std::string_view line_spec = "");
+
+        isocontour_handle isocontour(const std::vector<std::vector<double>> &X,
+                                     const std::vector<std::vector<double>> &Y,
+                                     const std::vector<std::vector<double>> &Z,
+                                     size_t n_levels,
+                                     std::string_view line_spec = "");
+
+        isocontour_handle isocontour(const std::vector<std::vector<double>> &X,
+                                     const std::vector<std::vector<double>> &Y,
+                                     const std::vector<std::vector<double>> &Z,
+                                     std::vector<double> levels,
+                                     std::string_view line_spec = "");
+
         using fcontour_function_type = std::function<double(double, double)>;
 
         /// Lambda function contour - Manual levels (or empty list for
@@ -2754,6 +2784,7 @@ namespace matplot {
         void run_axes_draw_commands();
         void run_labels_draw_commands();
         void run_legend_draw_commands();
+        void run_colorbar_draw_commands();
         void run_plot_objects_draw_commands();
 
       public /* commands children objects can call to draw on the axes */:
@@ -2763,9 +2794,21 @@ namespace matplot {
          * outside the axes and normalize the points to the axes
          * position on screen.
          */
+        void world2screen(std::vector<double> &x,
+                       std::vector<double> &y);
+
         void draw_path(const std::vector<double> &x,
                        const std::vector<double> &y,
                        const std::array<float, 4> &color);
+
+        void draw_polygons(const std::vector<double> &x,
+                       const std::vector<double> &y,
+                           const color_array &color);
+
+        void draw_polygons(const std::vector<double> &x,
+                       const std::vector<double> &y,
+                       const std::vector<std::vector<int>> &faces,
+                       const std::vector<color_array> &color);
 
       private /* members */:
         // axes

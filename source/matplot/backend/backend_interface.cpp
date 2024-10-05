@@ -9,6 +9,8 @@
 namespace matplot::backend {
     bool backend_interface::consumes_gnuplot_commands() { return false; }
 
+    backend_interface::~backend_interface() {}
+
     bool backend_interface::is_interactive() { return true; }
 
     const std::string &backend_interface::output() {
@@ -127,6 +129,29 @@ namespace matplot::backend {
             throw std::logic_error("This backend has no function draw_triangle "
                                    "because it is based on gnuplot commands");
         }
+    }
+
+    void backend_interface::draw_polygon(
+        const std::vector<double> &x, const std::vector<double> &y,
+        const std::vector<std::array<float, 4>> &node_colors) {}
+
+    void backend_interface::draw_polygon(const std::vector<double> &x,
+                                         const std::vector<double> &y,
+                                         const std::array<float, 4> &color) {}
+
+
+    void backend_interface::draw_axis(double x_min, double x_max, double y_min,
+                                      double y_max) {}
+
+    void
+     backend_interface::draw_colorbar(double contour_min, double contour_max) {
+
+    }
+
+    void backend_interface::draw_title(const std::string &_title) {}
+
+    void backend_interface::draw_labels(const std::string &x_label,
+                                        const std::string &y_label) {
     }
 
     void

@@ -41,6 +41,9 @@ namespace matplot {
         class MATPLOT_EXPORTS backend_interface {
             /// Virtual functions you can override to create any backend
           public:
+
+           virtual ~backend_interface();
+
             /// \brief True if backend is in interactive mode
             /// One backends might support both interactive and
             /// non-interactive mode.
@@ -180,6 +183,29 @@ namespace matplot {
             virtual void draw_triangle(const std::vector<double> &x,
                                        const std::vector<double> &y,
                                        const std::vector<double> &z = {});
+
+            /// \brief Draw convex polygon on the image
+            virtual void draw_polygon(const std::vector<double> &x,
+                                       const std::vector<double> &y,
+                                      const std::vector<std::array<float, 4>> &node_colors);
+
+            /// \brief Draw convex polygon on the image
+            virtual void draw_polygon(const std::vector<double> &x,
+                                       const std::vector<double> &y,
+                                      const std::array<float, 4> &color);
+
+            /// \brief Draw rectangle on the image
+            virtual void draw_axis(double x_min,double x_max,double y_min,double y_max);
+
+            /// \brief Draw rectangle on the image
+            virtual void draw_colorbar(
+                double contour_min, double contour_max);
+
+            /// \brief Draw labels
+            virtual void draw_labels(const std::string &x_label,
+                                     const std::string &y_label);
+
+            virtual void draw_title(const std::string &_title);
 
             /// We can certainly include more functions here, such as
             /// draw_mesh, draw_rectangle, etc...

@@ -80,6 +80,12 @@ namespace matplot {
 
     using vector_2d = std::vector<vector_1d>;
 
+    struct point_2d 
+    {
+        double x;
+        double y;
+    };
+
     MATPLOT_EXPORTS
     std::vector<double> linspace(double lower_bound, double upper_bound);
 
@@ -562,6 +568,7 @@ namespace matplot {
     struct ticks_results {
         std::vector<double> ticks;
         std::vector<std::string> tickLabels;
+        int expDec{0};
         std::string scaleStr;
         std::vector<double> minorTicks;
         std::vector<double> overhang;
@@ -588,8 +595,29 @@ namespace matplot {
     /// https://www.mathworks.com/matlabcentral/fileexchange/30671-calcticks
     MATPLOT_EXPORTS
     ticks_results calcticks(double limits_min = -5, double limits_max = +5,
-                            bool horizontal = false, double text_size = 1.25,
+                            bool horizontal = false, double text_size = 1e-2,
                             bool separateExp = true, bool log = false);
+
+    MATPLOT_EXPORTS
+    template <typename T> struct NaNComp {
+
+        NaNComp(bool _is_max) : r(_is_max){};
+
+        bool r;
+
+        bool operator()(T a, T b) const {
+            if (std::isnan(a) && std::isnan(b)) {
+                return false; // Assume NaN is less than *any* non-NaN value.
+            }
+            if (std::isnan(b)) {
+                return !r; // Assume NaN is less than *any* non-NaN value.
+            }
+            if (std::isnan(a)) {
+                return r; // Assume *any* non-NaN value is greater than NaN.
+            }
+            return (a < b);
+        }
+    };
 
     MATPLOT_EXPORTS
     double distance(double x1, double y1, double x2, double y2);

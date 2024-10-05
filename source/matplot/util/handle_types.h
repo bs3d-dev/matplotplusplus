@@ -20,6 +20,9 @@ namespace matplot {
     class axes_object;
     using axes_object_handle = std::shared_ptr<class axes_object>;
 
+    class mask;
+    using mask_handle = std::shared_ptr<class mask>;
+
     class legend;
     using legend_handle = std::shared_ptr<class legend>;
 
@@ -68,6 +71,12 @@ namespace matplot {
 
     class contours;
     using contours_handle = std::shared_ptr<class contours>;
+
+    class patch;
+    using patch_handle = std::shared_ptr<class patch>;
+
+    class patch;
+    using isocontour_handle = std::shared_ptr<class isocontour>;
 
     class surface;
     using surface_handle = std::shared_ptr<class surface>;

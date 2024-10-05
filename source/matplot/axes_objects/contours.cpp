@@ -35,6 +35,30 @@ namespace matplot {
                                  static_cast<long>(nchunk_));
     }
 
+    void contours::run_draw_commands() {
+        make_sure_data_is_preprocessed();
+        auto [lower_levels, upper_levels] = get_lowers_and_uppers();
+        auto [min_it, max_it] =
+            std::minmax_element(levels_.begin(), levels_.end());
+        double contour_min_level = *min_it;
+        double contour_max_level = *max_it;
+        if (line_spec_.user_color()) {
+            for (int i = 0; i < lines_.size(); i++) {
+                parent_->draw_path(
+                    lines_[i].first, lines_[i].second,line_spec_.color());
+            }
+        } else {
+            for (int i = 0; i < lines_.size(); i++) {
+                parent_->draw_path(
+                    lines_[i].first, lines_[i].second,
+                    parent_->colormap_interpolation(
+                        levels_[i], contour_min_level, contour_max_level));
+            }
+        }
+        //parent_->parent()->backend()->draw_colorbar(contour_min_level, contour_max_level, levels_);
+
+    }
+
     std::string contours::set_variables_string() {
         return "    set style textbox opaque margins 0.5, 0.5 fc bgnd noborder "
                "linewidth  1.0\n";
@@ -1568,15 +1592,19 @@ namespace matplot {
         } else {
             check_xyz();
         }
-        zmin_ = Z_data_[0][0];
-        zmax_ = Z_data_[0][0];
+        zmin_ = NaN;
+        zmax_ = NaN;
+        auto min_comp = NaNComp<double>(false);
+        auto max_comp = NaNComp<double>(true);
         for (size_t i = 0; i < Z_data_.size(); ++i) {
-            auto [row_min, row_max] =
-                std::minmax_element(Z_data_[i].begin(), Z_data_[i].end());
-            if (*row_min < zmin_) {
+            auto row_min =
+                std::min_element(Z_data_[i].begin(), Z_data_[i].end(),min_comp);
+            auto row_max =
+                std::max_element(Z_data_[i].begin(), Z_data_[i].end(),max_comp);
+            if (min_comp(*row_min, zmin_)) {
                 zmin_ = *row_min;
             }
-            if (*row_max > zmax_) {
+            if (!max_comp(*row_max, zmax_)) {
                 zmax_ = *row_max;
             }
         }

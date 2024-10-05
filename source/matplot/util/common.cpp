@@ -858,7 +858,7 @@ namespace matplot {
                             bool horizontal, double text_size, bool separateExp,
                             bool log) {
         // Default limit on label length (in characters)
-        constexpr size_t defMaxChars = 9;
+        constexpr size_t defMaxChars = 8;
         // Minimum value of the (upper) limit on label length (characters).
         // Setting this value too small will cause problems. Note: This value
         // does not affect the minimum length of the ticklabels.
@@ -1207,6 +1207,7 @@ namespace matplot {
 
             result.ticks = ticks;
             result.tickLabels = tickLabels;
+            result.expDec = decMax_d;
             result.scaleStr = scaleStr;
             result.overhang = overhang;
         } else if (isExp[bestIdx]) {

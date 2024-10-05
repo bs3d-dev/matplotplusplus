@@ -22,6 +22,8 @@
 #include <matplot/axes_objects/box_chart.h>
 #include <matplot/axes_objects/circles.h>
 #include <matplot/axes_objects/contours.h>
+#include <matplot/axes_objects/patch.h>
+#include <matplot/axes_objects/isocontour.h>
 #include <matplot/axes_objects/error_bar.h>
 #include <matplot/axes_objects/filled_area.h>
 #include <matplot/axes_objects/function_line.h>
@@ -164,6 +166,10 @@ namespace matplot {
 
     std::tuple<double, double, double, double, double, double>
     axes_type::calculate_margins() {
+
+        return std::make_tuple(1, 1, 0, 1, 0,
+                               1);
+
         // There are conditions on which the xlim are smaller than requested
         // to make room for other elements
         double width_multiplier = is_3d() && !is_3d_map() ? 0.72 : 1.;
@@ -992,6 +998,7 @@ namespace matplot {
         run_labels_draw_commands();
         run_title_draw_commands();
         run_legend_draw_commands();
+        run_colorbar_draw_commands();
         run_plot_objects_draw_commands();
     }
 
@@ -1009,7 +1016,7 @@ namespace matplot {
     }
 
     void axes_type::run_title_draw_commands() {
-        // This should draw the title on top of the axes
+        parent_->backend_->draw_title(title());
     }
 
     void axes_type::run_box_draw_commands() {
@@ -1025,121 +1032,38 @@ namespace matplot {
         const std::array<float, 4> color = {0., 0., 0., 0.};
         std::vector<double> box_xs = {x1, x2, x2, x1, x1};
         std::vector<double> box_ys = {y1, y1, y2, y2, y1};
-        parent_->backend_->draw_path(box_xs, box_ys, color);
+        //parent_->backend_->draw_path(box_xs, box_ys, color);
     }
 
     void axes_type::run_grid_draw_commands() {}
 
     void axes_type::run_axes_draw_commands() {
-        auto [w, h, lm, rm, bm, tm] = calculate_margins();
-        (void)w;
-        (void)h;
-        double view_width = parent_->backend_->width();
-        double view_height = parent_->backend_->height();
-        // to draw the x axis we
-        // - normalize x values
-        // - keep y as absolute values
+
+        // get limits
         auto xlimits = xlim();
         auto ylimits = ylim();
-        std::vector<double> cx;
-        if (x_axis_.tick_values_manual()) {
-            cx = x_axis_.tick_values();
-        } else {
-            ticks_results xticks_results =
-                calcticks(xlimits[0], xlimits[1], true, 1.25, true, false);
-            cx = xticks_results.ticks;
-        }
-        // clamp values outside x limits
-        cx = transform(cx, [&](double x) {
-            return std::clamp(x, xlimits[0], xlimits[1]);
-        });
 
-        // convert x values to viewport range
-        double viewport_xmin = lm * view_width;
-        double viewport_xmax = rm * view_width;
-        double viewport_xrange = viewport_xmax - viewport_xmin;
+        // draw text limits
+        parent_->backend_->draw_axis(xlimits[0], xlimits[1], ylimits[0],ylimits[1]);
 
-        auto xrange = xlimits[1] - xlimits[0];
-        for (auto &v : cx) {
-            v -= xlimits[0];
-            v /= xrange;
-            v *= viewport_xrange;
-            v += viewport_xmin;
-        }
-
-        // get viewport range for y axis
-        double viewport_ymin = bm * view_height;
-        double viewport_ymax = tm * view_height;
-        double viewport_yrange = viewport_ymax - viewport_ymin;
-
-        // The meaning of tick length is proportional
-        // to the largest of x and y viewport size.
-        // This unit makes the tick sizes look the same on x and y
-        // while still proportional to the axes object.
-        double tick_length_multiplier =
-            std::max(viewport_xrange, viewport_yrange) * 0.015;
-
-        // draw a path for each x tick
-        double xtick_length_multiplier =
-            std::min(tick_length_multiplier, viewport_xrange);
-        for (auto &v : cx) {
-            parent_->backend_->draw_path(
-                {v, v},
-                {viewport_ymin, viewport_ymin + x_axis_.tick_length() *
-                                                    xtick_length_multiplier},
-                x_axis_.color_);
-            parent_->backend_->draw_path(
-                {v, v},
-                {viewport_ymax, viewport_ymax - x_axis_.tick_length() *
-                                                    xtick_length_multiplier},
-                x_axis_.color_);
-        }
-
-        // to draw the y axis we
-        // - normalize y values
-        // - keep x as absolute values
-        std::vector<double> cy;
-        if (y_axis_.tick_values_manual()) {
-            cy = y_axis_.tick_values();
-        } else {
-            ticks_results yticks_results =
-                calcticks(ylimits[0], ylimits[1], false, 1.25, true, false);
-            cy = yticks_results.ticks;
-        }
-        // clamp values outside x limits
-        cy = transform(cy, [&](double x) {
-            return std::clamp(x, ylimits[0], ylimits[1]);
-        });
-
-        // convert y values to viewport range
-        auto yrange = ylimits[1] - ylimits[0];
-        for (auto &v : cy) {
-            v -= ylimits[0];
-            v /= yrange;
-            v *= viewport_yrange;
-            v += viewport_ymin;
-        }
-
-        // draw a path for each y tick
-        double ytick_length_multiplier =
-            std::min(tick_length_multiplier, viewport_yrange);
-        for (auto &v : cy) {
-            parent_->backend_->draw_path(
-                {viewport_xmin, viewport_xmin + y_axis_.tick_length() *
-                                                    ytick_length_multiplier},
-                {v, v}, y_axis_.color_);
-            parent_->backend_->draw_path(
-                {viewport_xmax, viewport_xmax - y_axis_.tick_length() *
-                                                    ytick_length_multiplier},
-                {v, v}, y_axis_.color_);
-        }
     }
 
-    void axes_type::run_labels_draw_commands() {}
+    void axes_type::run_labels_draw_commands() 
+    {
+        // draw label texts
+        parent_->backend_->draw_labels(x_axis_.label(),y_axis_.label());
+    }
 
     void axes_type::run_legend_draw_commands() {}
 
+    void axes_type::run_colorbar_draw_commands() {
+
+        parent_->backend()->draw_colorbar(
+            cb_axis_.limits_[0], cb_axis_.limits_[1]);
+    }
+
     void axes_type::run_plot_objects_draw_commands() {
+
         for (const auto &child : children_) {
             child->run_draw_commands();
         }
@@ -1951,7 +1875,7 @@ namespace matplot {
 
     color_array axes_type::colormap_interpolation(double value, double min,
                                                   double max) {
-        return ::matplot::colormap_interpolation(value, min, max, colormap_);
+        return matplot::colormap_interpolation(value, min, max, colormap_);
     }
 
     void axes_type::colormap(const std::vector<std::vector<double>> &colormap) {
@@ -4442,6 +4366,7 @@ namespace matplot {
         }
         this->x_axis().limits({l->xmin(), l->xmax()});
         this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
         this->emplace_object(l);
         this->color_box(true);
 
@@ -4499,6 +4424,97 @@ namespace matplot {
                         const std::vector<std::vector<double>> &Z,
                         std::string_view line_spec) {
         return this->contourf(X, Y, Z, 0, line_spec);
+    }
+
+    patch_handle axes_type::patch(const std::vector<std::vector<double>> &X,
+                                  const std::vector<std::vector<double>> &Y,
+                                  const std::vector<std::vector<double>> &Z,
+                                  std::string_view line_spec) {
+        patch_handle l =
+            std::make_shared<class patch>(this, X, Y, Z, line_spec);
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        this->color_box(true);
+        this->emplace_object(l);
+
+        return l;
+    }
+
+    patch_handle axes_type::patch(const vector_1d &x, const vector_1d &y,
+                                  const vector_1d &z,
+                                  const std::vector<std::vector<int>> &faces,
+                                  std::string_view line_spec) {
+        patch_handle l =
+            std::make_shared<class patch>(this, x, y, z, faces, line_spec);
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        this->color_box(true);
+        this->emplace_object(l);
+
+        return l;
+    }
+
+    isocontour_handle
+    axes_type::isocontour(const std::vector<std::vector<double>> &X,
+                          const std::vector<std::vector<double>> &Y,
+                          const std::vector<std::vector<double>> &Z,
+                          std::string_view line_spec) {
+        isocontour_handle l =
+            std::make_shared<class isocontour>(this, X, Y, Z, line_spec);
+
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        this->emplace_object(l);
+        this->color_box(true);
+
+        l->n_levels(10);
+
+        return l;
+    }
+
+    isocontour_handle
+    axes_type::isocontour(const std::vector<std::vector<double>> &X,
+                          const std::vector<std::vector<double>> &Y,
+                          const std::vector<std::vector<double>> &Z,
+                          size_t n_levels, std::string_view line_spec) {
+        isocontour_handle l =
+            std::make_shared<class isocontour>(this, X, Y, Z, line_spec);
+
+        l->n_levels(n_levels);
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        this->emplace_object(l);
+        this->color_box(true);
+
+        return l;
+    }
+
+    isocontour_handle
+    axes_type::isocontour(const std::vector<std::vector<double>> &X,
+                          const std::vector<std::vector<double>> &Y,
+                          const std::vector<std::vector<double>> &Z,
+                          std::vector<double> levels,
+        std::string_view line_spec) {
+        isocontour_handle l =
+            std::make_shared<class isocontour>(this, X, Y, Z, line_spec);
+
+        l->levels(levels);
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        this->emplace_object(l);
+        this->color_box(true);
+
+        return l;
     }
 
     using fcontour_function_type = std::function<double(double, double)>;
@@ -5532,17 +5548,16 @@ namespace matplot {
         return h;
     }
 
-    void axes_type::draw_path(const std::vector<double> &x,
-                              const std::vector<double> &y,
-                              const std::array<float, 4> &color) {
+    void axes_type::world2screen(std::vector<double> &x,
+                                 std::vector<double> &y) {
         // we still have to make limits calculate and return the
         // automatic limits rather than the default limits
         auto xlimits = xlim();
         auto ylimits = ylim();
         // clamp
-        std::vector<double> cx = transform(
+        x = transform(
             x, [&](double x) { return std::clamp(x, xlimits[0], xlimits[1]); });
-        std::vector<double> cy = transform(
+        y = transform(
             y, [&](double y) { return std::clamp(y, ylimits[0], ylimits[1]); });
         // normalize
         auto [w, h, lm, rm, bm, tm] = calculate_margins();
@@ -5556,20 +5571,59 @@ namespace matplot {
         double view_ymax = tm * view_height;
         auto xrange = xlimits[1] - xlimits[0];
         auto yrange = ylimits[1] - ylimits[0];
-        for (auto &v : cx) {
+        for (auto &v : x) {
             v -= xlimits[0];
             v /= xrange;
             v *= view_xmax - view_xmin;
             v += view_xmin;
         }
-        for (auto &v : cy) {
+        for (auto &v : y) {
             v -= ylimits[0];
             v /= yrange;
             v *= view_ymax - view_ymin;
             v += view_ymin;
         }
+    }
+
+    void axes_type::draw_path(const std::vector<double> &x,
+                              const std::vector<double> &y,
+                              const std::array<float, 4> &color) {
         // draw the normalized path to the backend
+        vector_1d cx = x, cy = y;
+        world2screen(cx, cy);
         parent_->backend_->draw_path(cx, cy, color);
+    }
+
+    void axes_type::draw_polygons(const std::vector<double> &x,
+                                  const std::vector<double> &y,
+                                  const color_array &color) {
+        // draw the normalized polygons to the backend
+        vector_1d cx = x, cy = y;
+        world2screen(cx, cy);
+
+        parent_->backend()->draw_polygon(cx, cy, color);
+    }
+
+    void axes_type::draw_polygons(const std::vector<double> &x,
+                                  const std::vector<double> &y,
+                                  const std::vector<std::vector<int>> &faces,
+                                  const std::vector<color_array> &color) {
+        // draw the normalized polygons to the backend
+        vector_1d cx = x, cy = y;
+        world2screen(cx, cy);
+
+        for (size_t i = 0; i < faces.size(); i++) {
+            vector_1d px(faces[i].size());
+            vector_1d py(faces[i].size());
+            std::vector<color_array> pc(faces[i].size());
+            for (size_t j = 0; j < faces[i].size(); j++) {
+                px[j] = cx[faces[i][j]];
+                py[j] = cy[faces[i][j]];
+                pc[j] = color[faces[i][j]];
+            }
+            parent_->backend()->draw_polygon(px,py,pc);
+        }
+
     }
 
 } // namespace matplot

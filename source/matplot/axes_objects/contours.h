@@ -68,6 +68,7 @@ namespace matplot {
         virtual ~contours() = default;
 
       public /* mandatory virtual functions */:
+        void run_draw_commands() override;
         std::string set_variables_string() override;
         std::string plot_string() override;
         std::string legend_string(std::string_view title) override;

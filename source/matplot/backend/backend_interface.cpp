@@ -141,7 +141,7 @@ namespace matplot::backend {
 
 
     void backend_interface::draw_axis(double x_min, double x_max, double y_min,
-                                      double y_max) {}
+                                      double y_max, bool x_reverse, bool y_reverse) {}
 
     void
      backend_interface::draw_colorbar(double contour_min, double contour_max) {

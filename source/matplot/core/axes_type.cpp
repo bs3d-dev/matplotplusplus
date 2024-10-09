@@ -1042,9 +1042,10 @@ namespace matplot {
         // get limits
         auto xlimits = xlim();
         auto ylimits = ylim();
+          
 
         // draw text limits
-        parent_->backend_->draw_axis(xlimits[0], xlimits[1], ylimits[0],ylimits[1]);
+        parent_->backend_->draw_axis(xlimits[0], xlimits[1], ylimits[0],ylimits[1], x_axis().reverse(), y_axis().reverse());
 
     }
 
@@ -1057,6 +1058,17 @@ namespace matplot {
     void axes_type::run_legend_draw_commands() {}
 
     void axes_type::run_colorbar_draw_commands() {
+
+     bool any_obj_needs_colormap = false;
+     for (const auto& child : children_) {
+      if (child->requires_colormap()) {
+       any_obj_needs_colormap = true;
+       break;
+      }
+     }
+
+     if (!any_obj_needs_colormap)
+      return;
 
         parent_->backend()->draw_colorbar(
             cb_axis_.limits_[0], cb_axis_.limits_[1]);
@@ -5590,6 +5602,20 @@ namespace matplot {
                               const std::array<float, 4> &color) {
         // draw the normalized path to the backend
         vector_1d cx = x, cy = y;
+        // Check if axis is reversed
+        if (x_axis().reverse())
+        {
+         double xmax = xlim()[1];
+         for (double& _x : cx)
+          _x = xmax - _x;
+        }
+        if (y_axis().reverse())
+        {
+         double ymax = ylim()[1];
+         for (double& _y : cy)
+          _y = ymax - _y;
+        }
+
         world2screen(cx, cy);
         parent_->backend_->draw_path(cx, cy, color);
     }

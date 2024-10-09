@@ -195,7 +195,7 @@ namespace matplot {
                                       const std::array<float, 4> &color);
 
             /// \brief Draw rectangle on the image
-            virtual void draw_axis(double x_min,double x_max,double y_min,double y_max);
+            virtual void draw_axis(double x_min,double x_max,double y_min,double y_max, bool x_reverse = false, bool y_reverse = false);
 
             /// \brief Draw rectangle on the image
             virtual void draw_colorbar(

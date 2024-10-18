@@ -894,6 +894,17 @@ namespace matplot {
         double uEps = eps(limits_max);
         double minEps = min(lEps, uEps);
 
+        // Check for zero range
+        if (range < minEps)
+        {
+            limits_max += 10 * minEps;
+            limits_min -= 10 * minEps;
+            lEps = eps(limits_min);
+            uEps = eps(limits_max);
+            minEps = min(lEps, uEps);
+            range = limits_max - limits_min;
+        }
+
         // Vector of allowed tick counts
         std::vector<double> testTickCounts = iota(2, initMaxTicks);
 

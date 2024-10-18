@@ -1042,7 +1042,6 @@ namespace matplot {
         // get limits
         auto xlimits = xlim();
         auto ylimits = ylim();
-          
 
         // draw text limits
         parent_->backend_->draw_axis(xlimits[0], xlimits[1], ylimits[0],ylimits[1], x_axis().reverse(), y_axis().reverse());
@@ -1058,6 +1057,9 @@ namespace matplot {
     void axes_type::run_legend_draw_commands() {}
 
     void axes_type::run_colorbar_draw_commands() {
+
+     if (!cb_axis_.visible())
+            return;
 
      bool any_obj_needs_colormap = false;
      for (const auto& child : children_) {
@@ -2099,7 +2101,18 @@ namespace matplot {
             auto [xmin, xmax, ymin, ymax] = this->child_limits();
             (void)xmin;
             (void)xmax;
+
+            // check y range
+            double range = ymax - ymin;
+            double epsMin = eps(ymin);
+            double epsMax = eps(ymax);
+            double minEps = min(epsMin, epsMax);
+            if (range < minEps) {
+                ymax += 10 * minEps;
+                ymin -= 10 * minEps;
+            }
             return std::array<double, 2>{ymin, ymax};
+
         } else {
             return y_axis().limits();
         }

@@ -250,15 +250,18 @@ namespace matplot {
                     return axes_object::xmax();
                 }
             }
-            return *std::max_element(x_data_.begin(), x_data_.end());
+            return *std::max_element(x_data_.begin(), x_data_.end(),
+                                     NaNComp<double>(true));
         } else {
             // y = rho
             if (parent_->r_axis().limits_mode_manual()) {
                 return +(parent_->r_axis().limits()[1] -
                          parent_->r_axis().limits()[0]);
             }
-            auto [min_rho, max_rho] =
-                std::minmax_element(y_data_.begin(), y_data_.end());
+            auto min_rho = std::min_element(x_data_.begin(), x_data_.end(),
+                                            NaNComp<double>(false));
+            auto max_rho = std::max_element(x_data_.begin(), x_data_.end(),
+                                            NaNComp<double>(true));
             if (max_rho != y_data_.end() && min_rho != y_data_.end()) {
                 return +round_polar_max(std::abs(*max_rho));
             } else {
@@ -276,16 +279,19 @@ namespace matplot {
                     return axes_object::xmin();
                 }
             }
-            return *std::min_element(x_data_.begin(), x_data_.end());
+            return *std::min_element(x_data_.begin(), x_data_.end(),
+                                     NaNComp<double>(false));
         } else {
             // y = rho
             if (parent_->r_axis().limits_mode_manual()) {
                 return -(parent_->r_axis().limits()[1] -
                          parent_->r_axis().limits()[0]);
             }
-            auto [min_rho, max_rho] =
-                std::minmax_element(y_data_.begin(), y_data_.end());
-            if (max_rho != y_data_.end() && min_rho != y_data_.end()) {
+            auto min_rho = std::min_element(x_data_.begin(), x_data_.end(),
+                                            NaNComp<double>(false));
+            auto max_rho = std::max_element(x_data_.begin(), x_data_.end(),
+                                            NaNComp<double>(true));
+            if (max_rho != x_data_.end() && min_rho != x_data_.end()) {
                 return -round_polar_max(std::abs(*max_rho));
             } else {
                 return -1;
@@ -298,15 +304,19 @@ namespace matplot {
             if (y_data_.empty()) {
                 return axes_object::ymax();
             }
-            return *std::max_element(y_data_.begin(), y_data_.end());
+            return *std::max_element(y_data_.begin(), y_data_.end(),
+                                     NaNComp<double>(true));
         } else {
             // y = rho
             if (parent_->r_axis().limits_mode_manual()) {
                 return +(parent_->r_axis().limits()[1] -
                          parent_->r_axis().limits()[0]);
             }
-            auto [min_rho, max_rho] =
-                std::minmax_element(y_data_.begin(), y_data_.end());
+            auto min_rho = std::min_element(y_data_.begin(), y_data_.end(),
+                                      NaNComp<double>(false));
+            auto max_rho = std::max_element(y_data_.begin(), y_data_.end(),
+                                      NaNComp<double>(true));
+
             if (max_rho != y_data_.end() && min_rho != y_data_.end()) {
                 return +round_polar_max(std::abs(*max_rho));
             } else {
@@ -320,15 +330,18 @@ namespace matplot {
             if (y_data_.empty()) {
                 return axes_object::ymin();
             }
-            return *std::min_element(y_data_.begin(), y_data_.end());
+            return *std::min_element(y_data_.begin(), y_data_.end(),
+                                     NaNComp<double>(false));
         } else {
             // y = rho
             if (parent_->r_axis().limits_mode_manual()) {
                 return -(parent_->r_axis().limits()[1] -
                          parent_->r_axis().limits()[0]);
             }
-            auto [min_rho, max_rho] =
-                std::minmax_element(y_data_.begin(), y_data_.end());
+            auto min_rho = std::min_element(y_data_.begin(), y_data_.end(),
+                                            NaNComp<double>(false));
+            auto max_rho = std::max_element(y_data_.begin(), y_data_.end(),
+                                            NaNComp<double>(true));
             if (max_rho != y_data_.end() && min_rho != y_data_.end()) {
                 return -round_polar_max(std::abs(*max_rho));
             } else {
@@ -514,7 +527,13 @@ namespace matplot {
     void line::run_draw_commands() {
         // ask axes to draw the line
         maybe_update_line_spec();
-        parent_->draw_path(x_data_, y_data_, line_spec_.color());
+        for (size_t i = 1; i < x_data_.size(); i++) {
+            if (std::isfinite(y_data_[i-1]) && std::isfinite(y_data_[i])) {
+                vector_1d x_plot{x_data_[i - 1], x_data_[i]};
+                vector_1d y_plot{y_data_[i - 1], y_data_[i]};
+                parent_->draw_path(x_plot, y_plot, line_spec_.color());
+            }
+        }
     }
 
 } // namespace matplot

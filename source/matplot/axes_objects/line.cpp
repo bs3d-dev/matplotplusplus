@@ -525,6 +525,10 @@ namespace matplot {
     }
 
     void line::run_draw_commands() {
+
+     if (!visible_)
+            return;
+
         // ask axes to draw the line
         maybe_update_line_spec();
         for (size_t i = 1; i < x_data_.size(); i++) {

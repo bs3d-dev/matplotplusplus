@@ -48,6 +48,7 @@ namespace matplot {
         double ymin() override;
         enum axes_object::axes_category axes_category() override;
         bool requires_colormap() override;
+        line_spec legend_specs() override;
 
       public /* getters and setters */:
         class line &line_style(std::string_view line_spec);
@@ -83,7 +84,7 @@ namespace matplot {
         bool polar() const;
         class line &polar(bool polar);
 
-        bool visible() const;
+        bool visible() const override;
         class line &visible(bool visible);
 
       public /* getters and setters bypassing the line_spec */:

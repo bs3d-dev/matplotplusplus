@@ -148,6 +148,11 @@ namespace matplot::backend {
 
     }
 
+    void
+    backend_interface::draw_legends(const std::vector<std::string> &labels,
+                                    const std::vector<line_spec> &line_specs) {
+    }
+
     void backend_interface::draw_title(const std::string &_title) {}
 
     void backend_interface::draw_labels(const std::string &x_label,

@@ -4,6 +4,7 @@
 
 #include <matplot/core/axes_object.h>
 #include <matplot/core/axes_type.h>
+#include <matplot/core/line_spec.h>
 #include <matplot/util/common.h>
 
 namespace matplot {
@@ -56,6 +57,8 @@ namespace matplot {
             return res;
         }
     }
+
+    line_spec axes_object::legend_specs() { return line_spec(); }
 
     std::string axes_object::unset_variables_string() { return ""; }
 

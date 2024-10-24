@@ -997,9 +997,9 @@ namespace matplot {
         run_axes_draw_commands();
         run_labels_draw_commands();
         run_title_draw_commands();
-        run_legend_draw_commands();
         run_colorbar_draw_commands();
         run_plot_objects_draw_commands();
+        run_legend_draw_commands();
     }
 
     void axes_type::run_background_draw_commands() {
@@ -1054,7 +1054,24 @@ namespace matplot {
         parent_->backend_->draw_labels(x_axis_.label(),y_axis_.label());
     }
 
-    void axes_type::run_legend_draw_commands() {}
+    void axes_type::run_legend_draw_commands() {
+
+     if (!legend_)
+            return;
+     if (!legend_->visible())
+            return;
+     if (legend_->empty())
+            return;
+
+     std::vector<line_spec> line_specs;
+     for (size_t i = 0; i < children_.size(); i++) {
+         if (children_[i]->visible())
+             line_specs.push_back(children_[i]->legend_specs());
+        }
+
+         //draw label texts
+        parent_->backend_->draw_legends(legend_->strings(), line_specs);
+    }
 
     void axes_type::run_colorbar_draw_commands() {
 

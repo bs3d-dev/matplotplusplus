@@ -364,6 +364,11 @@ namespace matplot {
 
     bool line::requires_colormap() { return !marker_colors_.empty(); }
 
+    line_spec line::legend_specs() {
+        // ask axes to draw the line
+        return line_spec_;
+    }
+
     class line &line::line_style(std::string_view str) {
         line_spec_.parse_string(str);
         touch();

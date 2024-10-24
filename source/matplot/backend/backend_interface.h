@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <matplot/core/line_spec.h>
 
 namespace matplot {
     class figure_type;
@@ -204,6 +205,11 @@ namespace matplot {
             /// \brief Draw labels
             virtual void draw_labels(const std::string &x_label,
                                      const std::string &y_label);
+
+            /// \brief Draw labels
+            virtual void
+            draw_legends(const std::vector<std::string> &labels,
+                         const std::vector<line_spec> &line_specs);
 
             virtual void draw_title(const std::string &_title);
 

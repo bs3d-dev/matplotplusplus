@@ -12,6 +12,7 @@
 
 namespace matplot {
     class axes_type;
+    class line_spec;
     using axes_handle = std::shared_ptr<class axes_type>;
 
     /// Abstract class for the objects we put in the xlim
@@ -44,6 +45,7 @@ namespace matplot {
         bool is_3d_map();
         bool is_2d();
         bool is_polar();
+        virtual bool visible() const { return true; };
 
       public /* for the backend */:
         virtual void run_draw_commands();
@@ -66,6 +68,8 @@ namespace matplot {
         virtual std::string
         legend_string(std::vector<std::string>::iterator &legends_begin,
                       std::vector<std::string>::iterator &legends_end);
+
+        virtual line_spec legend_specs();
 
         virtual std::string data_string();
         virtual std::string unset_variables_string();

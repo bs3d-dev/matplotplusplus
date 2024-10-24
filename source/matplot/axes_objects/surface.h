@@ -164,8 +164,8 @@ namespace matplot {
         double ribbon_width() const;
         class surface &ribbon_width(double ribbon_width);
 
-        bool visible() const;
-        class surface &visible(bool visible);
+        //bool visible() const;
+        //class surface &visible(bool visible);
 
       public /* getters and setters bypassing the line_spec */:
         float line_width() const;

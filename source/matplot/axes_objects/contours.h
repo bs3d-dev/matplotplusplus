@@ -121,8 +121,8 @@ namespace matplot {
         class contours &font_color(const color_array &font_color);
         class contours &font_color(std::string_view font_color);
 
-        bool visible() const;
-        class contours &visible(bool visible);
+        //bool visible() const;
+        //class contours &visible(bool visible);
 
         size_t n_levels() const;
         class contours &n_levels(size_t n_levels);

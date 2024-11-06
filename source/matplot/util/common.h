@@ -4,6 +4,8 @@
 
 #ifndef MATPLOTPLUSPLUS_COMMON_H
 #define MATPLOTPLUSPLUS_COMMON_H
+#undef max
+#undef min
 
 #include <matplot/detail/config.h>
 #include <algorithm>
@@ -148,7 +150,8 @@ namespace matplot {
         return val1 > val2 ? val1 : val2;
     }
 
-    template <typename T, typename... Ts> T max(T val1, T val2, Ts &&...vs) {
+    template <typename T, typename... Ts> T max(T val1, T val2, Ts &&...vs) 
+    {
         return val1 > val2 ? max(val1, std::forward<Ts>(vs)...)
                            : max(val2, std::forward<Ts>(vs)...);
     }

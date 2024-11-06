@@ -47,6 +47,12 @@ namespace matplot {
         }
     }
 
+    class axis_type &axis_type::set_limits(const std::array<double, 2> &limits) {
+        limits_ = limits;
+        touch();
+        return *this;
+    }
+
     class axis_type &axis_type::limits(const std::array<double, 2> &limits) {
         limits_ = limits;
         limits_mode_manual(true);

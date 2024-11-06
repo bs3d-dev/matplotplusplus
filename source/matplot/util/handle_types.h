@@ -75,7 +75,7 @@ namespace matplot {
     class patch;
     using patch_handle = std::shared_ptr<class patch>;
 
-    class patch;
+    class isocontour;
     using isocontour_handle = std::shared_ptr<class isocontour>;
 
     class surface;

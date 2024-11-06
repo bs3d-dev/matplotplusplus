@@ -92,9 +92,10 @@ namespace matplot {
 
                 for (int i = first; i != last; i = i + step) {
 
-                    if (levels_[i] < z0 && z0 < levels_[i + 1]) {
+                    if (i+ 1 < n_levels_&& levels_[i] < z0 && z0 < levels_[i + 1])
                         levels_map[i].push_back(p0);
-                    } else if (levels_[i] == z0) {
+                    else if (levels_[i] == z0) 
+                    {
                         levels_map[i].push_back(p0);
                         levels_map[i - 1].push_back(p0);
                     }
@@ -180,39 +181,43 @@ namespace matplot {
         return *this;
     }
 
-    isocontour &isocontour::n_levels(size_t n_levels) {
+    isocontour& isocontour::n_levels(size_t n_levels, double cmin, double cmax)
+    {
+     levels_.clear();
 
-        levels_.clear();
+     if (z_const_) {
+      levels_.resize(2);
+      levels_.front() = cmin;
+      levels_.back() = cmax;
+      return *this;
+     }
 
-        if (z_const_) {
-            levels_.resize(2);
-            levels_.front() = zmin_;
-            levels_.back() = zmax_;
-            return *this;
-        }
+     if (z_nan_) {
+      levels_.resize(2);
+      levels_.front() = 0;
+      levels_.back() = 0;
+      return *this;
+     }
 
-        if (z_nan_) {
-            levels_.resize(2);
-            levels_.front() = 0;
-            levels_.back() = 0;
-            return *this;
-        }    
+     vector_1d ticks_values = calcticks(cmin, cmax, false, 0.01).ticks;
+     n_levels_ = ticks_values.size();
+     if (ticks_values.front() != cmin) {
+      levels_.push_back(cmin - abs(cmin) * 0.01);
+      n_levels_++;
+     }
+     levels_.insert(levels_.end(), ticks_values.begin(), ticks_values.end());
+     if (ticks_values.back() != cmax)
+     {
+      levels_.push_back(cmax + abs(cmax) * 0.01);
+      n_levels_++;
+     }
 
-        vector_1d ticks_values = calcticks(zmin_, zmax_, false, 0.01).ticks;
-        n_levels_ = ticks_values.size();
-        if (ticks_values.front() != zmin_) {
-            levels_.push_back(zmin_ - abs(zmin_) * 0.01);
-            n_levels_++;
-        }
-        levels_.insert(levels_.end(), ticks_values.begin(), ticks_values.end());
-        if (ticks_values.back() != zmax_)
-        {
-            levels_.push_back(zmax_ + abs(zmax_) * 0.01);
-            n_levels_++;
-        }
-            
-        touch();
-        return *this;
+     touch();
+     return *this;
+    }
+
+    isocontour &isocontour::n_levels(size_t _n_levels) {
+     return n_levels(_n_levels, zmin_, zmax_);        
     }
 
     void isocontour::initialize_preprocessed_data() {

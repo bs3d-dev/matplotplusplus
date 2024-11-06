@@ -997,8 +997,8 @@ namespace matplot {
         run_axes_draw_commands();
         run_labels_draw_commands();
         run_title_draw_commands();
-        run_colorbar_draw_commands();
         run_plot_objects_draw_commands();
+        run_colorbar_draw_commands();
         run_legend_draw_commands();
     }
 
@@ -4511,12 +4511,18 @@ namespace matplot {
 
         this->x_axis().limits({l->xmin(), l->xmax()});
         this->y_axis().limits({l->ymin(), l->ymax()});
-        this->cb_axis().limits({l->zmin(), l->zmax()});
-        this->emplace_object(l);
+        if (cb_axis_.limits_mode_auto())
+        {
+         this->cb_axis().set_limits({ l->zmin(), l->zmax() });
+         l->n_levels(10);
+        }
+        else
+        {
+         l->n_levels(10, cb_axis_.limits_[0], cb_axis_.limits_[1]);
+        }
+
+        this->emplace_object(l);this->color_box(true);
         this->color_box(true);
-
-        l->n_levels(10);
-
         return l;
     }
 

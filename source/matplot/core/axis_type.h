@@ -34,6 +34,7 @@ namespace matplot {
 
       public:
         std::array<double, 2> limits() const;
+        class axis_type &set_limits(const std::array<double, 2> &limits);
         class axis_type &limits(const std::array<double, 2> &limits);
 
         bool limits_mode_auto() const;

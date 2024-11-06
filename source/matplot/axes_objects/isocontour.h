@@ -61,6 +61,7 @@ namespace matplot {
         size_t n_levels() const;
 
         class isocontour &levels(const std::vector<double> &levels);
+        class isocontour &n_levels(size_t n_levels, double cmin, double cmax);
         class isocontour &n_levels(size_t n_levels);
 
       protected:

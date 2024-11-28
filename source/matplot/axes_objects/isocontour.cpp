@@ -135,6 +135,7 @@ namespace matplot {
     std::string isocontour::legend_string(std::string_view title) {
         return std::string();
     }
+    bool isocontour::has_legend() const { return false; }
     std::string isocontour::data_string() { return std::string(); }
 
     bool isocontour::requires_colormap() { return true; }

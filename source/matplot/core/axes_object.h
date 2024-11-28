@@ -46,6 +46,7 @@ namespace matplot {
         bool is_2d();
         bool is_polar();
         virtual bool visible() const { return true; };
+        virtual bool has_legend() const { return true; };
 
       public /* for the backend */:
         virtual void run_draw_commands();

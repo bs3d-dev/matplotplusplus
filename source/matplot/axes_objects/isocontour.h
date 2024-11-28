@@ -40,6 +40,7 @@ namespace matplot {
         std::string set_variables_string() override;
         std::string plot_string() override;
         std::string legend_string(std::string_view title) override;
+        bool has_legend() const override;
         std::string data_string() override;
         bool requires_colormap() override;
         double xmax() override;

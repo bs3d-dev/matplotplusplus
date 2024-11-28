@@ -1065,7 +1065,7 @@ namespace matplot {
 
      std::vector<line_spec> line_specs;
      for (size_t i = 0; i < children_.size(); i++) {
-         if (children_[i]->visible())
+         if (children_[i]->visible() && children_[i]->has_legend())
              line_specs.push_back(children_[i]->legend_specs());
         }
 

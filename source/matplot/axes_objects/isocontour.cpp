@@ -27,9 +27,6 @@ namespace matplot {
     }
     void isocontour::run_draw_commands() {
 
-        _polygons.clear();
-        _polygons_color.clear();
-
         if (z_nan_) {
             return;
         }
@@ -113,20 +110,16 @@ namespace matplot {
 
             for (auto &[idx, pts] : levels_map) {
 
-                _polygons.push_back(pts);
-                _polygons_color.push_back(
-                    parent_->colormap_interpolation(idx, 0, n_levels_));
+                vector_1d x(pts.size());
+                vector_1d y(pts.size());
+                for (size_t j = 0; j < pts.size(); j++) {
+                    x[j] = pts[j].x;
+                    y[j] = pts[j].y;
+                }
+                parent_->draw_polygons(
+                    x, y, parent_->colormap_interpolation(idx, 0, n_levels_));   
             }
-        }
 
-        for (size_t i = 0; i < _polygons.size(); ++i) {
-            vector_1d x(_polygons[i].size());
-            vector_1d y(_polygons[i].size());
-            for (size_t j = 0; j < _polygons[i].size(); j++) {
-                x[j] = _polygons[i][j].x;
-                y[j] = _polygons[i][j].y;
-            }
-            parent_->draw_polygons(x, y, _polygons_color[i]);        
         }
     }
 

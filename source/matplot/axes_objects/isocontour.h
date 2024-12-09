@@ -94,10 +94,6 @@ namespace matplot {
         size_t n_levels_{0};
         std::vector<double> levels_{};
 
-        // Auxiliary data structures
-        std::vector<std::vector<point_2d>> _polygons;
-        std::vector<color_array> _polygons_color;
-
         /// True if visible
         bool visible_{true};
         bool z_const_{false};

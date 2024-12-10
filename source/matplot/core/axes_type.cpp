@@ -2091,8 +2091,18 @@ namespace matplot {
     std::array<double, 2> axes_type::xlim() const {
         if (x_axis_.limits_mode_auto()) {
             auto [xmin, xmax, ymin, ymax] = this->child_limits();
-            (void)ymin;
-            (void)ymax;
+            (void)xmin;
+            (void)xmax;
+
+            // check y range
+            double range = xmax - xmin;
+            double epsMin = eps(xmin);
+            double epsMax = eps(xmax);
+            double minEps = min(epsMin, epsMax);
+            if (range < minEps) {
+                xmax += 10 * minEps;
+                xmin -= 10 * minEps;
+            }
             return std::array<double, 2>{xmin, xmax};
         } else {
             return x_axis().limits();
@@ -5631,6 +5641,16 @@ namespace matplot {
             v *= view_ymax - view_ymin;
             v += view_ymin;
         }
+    }
+
+    void axes_type::draw_point(const std::vector<double> &x,
+                               const std::vector<double> &y,
+                               const std::array<float, 4> &color) {
+
+        // draw the normalized path to the backend
+        vector_1d cx = x, cy = y;
+        world2screen(cx, cy);
+        parent_->backend_->draw_markers(cx, cy);
     }
 
     void axes_type::draw_path(const std::vector<double> &x,

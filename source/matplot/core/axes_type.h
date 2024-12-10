@@ -2797,6 +2797,10 @@ namespace matplot {
         void world2screen(std::vector<double> &x,
                        std::vector<double> &y);
 
+        void draw_point(const std::vector<double> &x,
+                       const std::vector<double> &y,
+                       const std::array<float, 4> &color);
+
         void draw_path(const std::vector<double> &x,
                        const std::vector<double> &y,
                        const std::array<float, 4> &color);

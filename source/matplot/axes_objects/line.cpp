@@ -536,6 +536,19 @@ namespace matplot {
 
         // ask axes to draw the line
         maybe_update_line_spec();
+
+        if (line_spec_.line_style() == matplot::line_spec::line_style::none) {
+            vector_1d x_plot;
+            vector_1d y_plot;
+            for (size_t i = 0; i < x_data_.size(); i++) {
+                x_plot.push_back(x_data_[i]);
+                y_plot.push_back(y_data_[i]);
+            }
+            parent_->draw_point(x_plot, y_plot, {});
+            return;
+        }
+
+
         for (size_t i = 1; i < x_data_.size(); i++) {
             if (std::isfinite(y_data_[i-1]) && std::isfinite(y_data_[i])) {
                 vector_1d x_plot{x_data_[i - 1], x_data_[i]};

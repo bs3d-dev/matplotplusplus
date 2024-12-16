@@ -140,8 +140,10 @@ namespace matplot::backend {
                                          const std::array<float, 4> &color) {}
 
 
-    void backend_interface::draw_axis(double x_min, double x_max, double y_min,
-                                      double y_max, bool x_reverse, bool y_reverse) {}
+    void backend_interface::draw_x_axis(double x_min, double x_max, bool x_reverse, double x_spacing) {}
+
+    void backend_interface::draw_y_axis(double y_min, double y_max, bool y_reverse, double y_spacing) {}
+
 
     void
      backend_interface::draw_colorbar(double contour_min, double contour_max) {

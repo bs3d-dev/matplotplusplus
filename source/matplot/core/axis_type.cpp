@@ -191,6 +191,7 @@ namespace matplot {
     axis_type::tick_values_automatic(bool tick_values_automatic) {
         tick_values_automatic_ = tick_values_automatic;
         touch();
+        parent_->parent()->draw();
         return *this;
     }
 
@@ -201,7 +202,22 @@ namespace matplot {
     class axis_type &axis_type::tick_values_manual(bool tick_values_manual) {
         tick_values_automatic_ = !tick_values_manual;
         touch();
+        parent_->parent()->draw();
         return *this;
+    }
+
+    double axis_type::tick_spacing() const
+    {
+     return tick_spacing_;
+    }
+
+    axis_type& axis_type::tick_spacing(double _spacing)
+    {
+     tick_values_automatic_ = false;
+     tick_spacing_ = _spacing;
+     touch();
+     parent_->parent()->draw();
+     return *this;
     }
 
     const std::vector<double> &axis_type::tick_values() const {

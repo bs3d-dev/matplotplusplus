@@ -1043,8 +1043,18 @@ namespace matplot {
         auto xlimits = xlim();
         auto ylimits = ylim();
 
-        // draw text limits
-        parent_->backend_->draw_axis(xlimits[0], xlimits[1], ylimits[0],ylimits[1], x_axis().reverse(), y_axis().reverse());
+        // draw x ticks
+        if (x_axis_.tick_values_automatic())
+         parent_->backend_->draw_x_axis(xlimits[0], xlimits[1], x_axis().reverse());
+        else
+									parent_->backend_->draw_x_axis(xlimits[0], xlimits[1], x_axis().reverse(), x_axis_.tick_spacing());
+
+        // draw y ticks
+        if (y_axis_.tick_values_automatic())
+         parent_->backend_->draw_y_axis(ylimits[0], ylimits[1], y_axis().reverse());
+        else
+         parent_->backend_->draw_y_axis(ylimits[0], ylimits[1], y_axis().reverse(), y_axis_.tick_spacing());
+
 
     }
 

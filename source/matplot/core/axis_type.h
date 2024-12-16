@@ -63,6 +63,9 @@ namespace matplot {
         bool tick_values_manual() const;
         class axis_type &tick_values_manual(bool tick_values_manual);
 
+        double tick_spacing() const;
+        class axis_type& tick_spacing(double _spacing);
+
         /// Get tick values
         /// This might be tick values provided by the user
         /// or tick values calculated automatically for the range
@@ -140,6 +143,7 @@ namespace matplot {
         bool ticklabels_mode_{true};
         std::array<float, 4> color_{0, 0.15f, 0.15f, 0.15f};
         float tick_length_{0.75};
+        double tick_spacing_{1.00};
 
         // minor tics
         bool minor_tick_{false};

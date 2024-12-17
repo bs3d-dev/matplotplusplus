@@ -41,6 +41,7 @@ namespace matplot {
             : error_bar(parent.get(), std::forward<Args>(args)...) {}
 
       public /* override the plotting function for error_bar */:
+       void run_draw_commands() override;
         std::string set_variables_string() override;
         std::string plot_string() override;
         std::string data_string() override;
@@ -84,6 +85,8 @@ namespace matplot {
         float filled_curve_alpha_{0.9f};
 
         float cap_size_{3.};
+        float x_cap_size_{3.};
+        float y_cap_size_{3.};
     };
 
 } // namespace matplot

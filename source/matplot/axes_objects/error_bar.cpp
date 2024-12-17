@@ -19,7 +19,8 @@ namespace matplot {
                          std::string_view line_spec)
         : line(parent, x, y, line_spec), x_negative_delta_(x_neg_delta),
           x_positive_delta_(x_pos_delta), y_negative_delta_(y_neg_delta),
-          y_positive_delta_(y_pos_delta) {}
+          y_positive_delta_(y_pos_delta) {
+    }
 
     error_bar::error_bar(class axes_type *parent, const std::vector<double> &x,
                          const std::vector<double> &y,
@@ -37,7 +38,8 @@ namespace matplot {
                                 : std::vector<double>({})),
           y_positive_delta_(type != error_bar::type::horizontal
                                 ? error
-                                : std::vector<double>({})) {}
+                                : std::vector<double>({})) {
+    }
 
     std::string error_bar::plot_string() {
         // plot errorbar behind the line
@@ -120,6 +122,85 @@ namespace matplot {
     }
 
     bool error_bar::requires_colormap() { return line::requires_colormap(); }
+
+    void error_bar::run_draw_commands()
+    {
+
+     if (!visible_)
+      return;
+
+     std::array<double, 2> xlimits = parent_->xlim();
+     double xrange = xlimits[1] - xlimits[0];
+     x_cap_size_ = xrange * 0.005;
+     std::array<double, 2> ylimits = parent_->ylim();
+     double yrange = ylimits[1] - ylimits[0];
+     y_cap_size_ = yrange * 0.005;
+
+     // ask axes to draw the line
+     maybe_update_line_spec();
+
+
+     for (size_t i = 1; i < x_data_.size(); i++) {
+      if (std::isfinite(y_data_[i - 1]) && std::isfinite(y_data_[i])) {
+       vector_1d x_plot{ x_data_[i - 1], x_data_[i] };
+       vector_1d y_plot{ y_data_[i - 1], y_data_[i] };
+       parent_->draw_path(x_plot, y_plot, line_spec_.color());
+      }
+     }
+
+     if (!y_negative_delta_.empty())
+     {
+      for (size_t i = 0; i < x_data_.size(); i++) {
+							{
+								vector_1d x_plot{ x_data_[i], x_data_[i] };
+								vector_1d y_plot{ y_data_[i], y_data_[i] - y_negative_delta_[i] };
+								parent_->draw_path(x_plot, y_plot, line_spec_.color());
+							}
+       {
+        vector_1d x_plot{ x_data_[i], x_data_[i] };
+        vector_1d y_plot{ y_data_[i], y_data_[i] + y_positive_delta_[i] };
+        parent_->draw_path(x_plot, y_plot, line_spec_.color());
+       }
+       {
+        vector_1d x_plot{ x_data_[i] - x_cap_size_, x_data_[i] + x_cap_size_ };
+        vector_1d y_plot{ y_data_[i] + y_positive_delta_[i], y_data_[i] + y_positive_delta_[i] };
+        parent_->draw_path(x_plot, y_plot, line_spec_.color());
+       }
+       {
+        vector_1d x_plot{ x_data_[i] - x_cap_size_, x_data_[i] + x_cap_size_ };
+        vector_1d y_plot{ y_data_[i] - y_negative_delta_[i], y_data_[i] - y_negative_delta_[i] };
+        parent_->draw_path(x_plot, y_plot, line_spec_.color());
+       }
+      }
+     }
+
+     if (!x_negative_delta_.empty())
+     {
+      for (size_t i = 0; i < x_data_.size(); i++) {
+							{
+								vector_1d x_plot{ x_data_[i], x_data_[i] - x_negative_delta_[i] };
+								vector_1d y_plot{ y_data_[i], y_data_[i] };
+								parent_->draw_path(x_plot, y_plot, line_spec_.color());
+							}
+							{
+								vector_1d x_plot{ x_data_[i], x_data_[i] + x_positive_delta_[i] };
+								vector_1d y_plot{ y_data_[i], y_data_[i] };
+								parent_->draw_path(x_plot, y_plot, line_spec_.color());
+							}
+							{
+								vector_1d x_plot{ x_data_[i] + x_positive_delta_[i], x_data_[i] + x_positive_delta_[i] };
+								vector_1d y_plot{ y_data_[i] - y_cap_size_, y_data_[i] + y_cap_size_ };
+								parent_->draw_path(x_plot, y_plot, line_spec_.color());
+							}
+							{
+								vector_1d x_plot{ x_data_[i] - x_negative_delta_[i], x_data_[i] - x_negative_delta_[i] };
+								vector_1d y_plot{ y_data_[i] - y_cap_size_, y_data_[i] + y_cap_size_ };
+								parent_->draw_path(x_plot, y_plot, line_spec_.color());
+							}
+      }
+     }
+
+    }
 
     std::string error_bar::set_variables_string() {
         //     set bars {small | large | fullwidth | <size>}

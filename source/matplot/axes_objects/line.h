@@ -37,8 +37,7 @@ namespace matplot {
         virtual ~line() = default;
 
       public /* mandatory virtual functions */:
-        void run_draw_commands() override;
-
+        virtual void run_draw_commands() override;
         std::string plot_string() override;
         std::string legend_string(std::string_view title) override;
         std::string data_string() override;

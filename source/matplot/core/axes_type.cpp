@@ -1054,8 +1054,6 @@ namespace matplot {
          parent_->backend_->draw_y_axis(ylimits[0], ylimits[1], y_axis().reverse());
         else
          parent_->backend_->draw_y_axis(ylimits[0], ylimits[1], y_axis().reverse(), y_axis_.tick_spacing());
-
-
     }
 
     void axes_type::run_labels_draw_commands() 
@@ -5622,11 +5620,11 @@ namespace matplot {
         // automatic limits rather than the default limits
         auto xlimits = xlim();
         auto ylimits = ylim();
-        // clamp
-        x = transform(
-            x, [&](double x) { return std::clamp(x, xlimits[0], xlimits[1]); });
-        y = transform(
-            y, [&](double y) { return std::clamp(y, ylimits[0], ylimits[1]); });
+        //// clamp
+        //x = transform(
+        //    x, [&](double x) { return std::clamp(x, xlimits[0], xlimits[1]); });
+        //y = transform(
+        //    y, [&](double y) { return std::clamp(y, ylimits[0], ylimits[1]); });
         // normalize
         auto [w, h, lm, rm, bm, tm] = calculate_margins();
         (void)w;

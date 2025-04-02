@@ -158,7 +158,8 @@ namespace matplot::backend {
     void backend_interface::draw_title(const std::string &_title) {}
 
     void backend_interface::draw_labels(const std::string &x_label,
-                                        const std::string &y_label) {
+                                        const std::string &y_label,
+                                        const std::string &cb_label) {
     }
 
     void

@@ -178,6 +178,8 @@ namespace matplot {
     MATPLOT_EXPORTS
     void ylabel(axes_handle ax, std::string_view str);
     MATPLOT_EXPORTS
+    void cblabel(axes_handle ax, std::string_view str);
+    MATPLOT_EXPORTS
     void y2label(std::string_view str);
     MATPLOT_EXPORTS
     void y2label(axes_handle ax, std::string_view str);

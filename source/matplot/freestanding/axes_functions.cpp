@@ -225,6 +225,8 @@ namespace matplot {
 
     void ylabel(axes_handle ax, std::string_view str) { ax->ylabel(str); }
 
+    void cblabel(axes_handle ax, std::string_view str) { ax->cblabel(str); }
+
     void y2label(std::string_view str) { y2label(gca(), str); }
 
     void y2label(axes_handle ax, std::string_view str) { ax->y2label(str); }

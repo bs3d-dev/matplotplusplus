@@ -205,7 +205,8 @@ namespace matplot {
 
             /// \brief Draw labels
             virtual void draw_labels(const std::string &x_label,
-                                     const std::string &y_label);
+                                     const std::string &y_label,
+                                     const std::string &cb_label = "");
 
             /// \brief Draw labels
             virtual void

@@ -1059,7 +1059,7 @@ namespace matplot {
     void axes_type::run_labels_draw_commands() 
     {
         // draw label texts
-        parent_->backend_->draw_labels(x_axis_.label(),y_axis_.label());
+        parent_->backend_->draw_labels(x_axis_.label(),y_axis_.label(),cb_axis_.label());
     }
 
     void axes_type::run_legend_draw_commands() {

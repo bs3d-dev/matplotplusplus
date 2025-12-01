@@ -636,9 +636,10 @@ namespace matplot {
         /// \brief Helper method for determining the whole array size.
         /// Required for caching inner vector's size.
         std::size_t calculate_size(const vector_2d &vec) {
-            return std::accumulate(
-                vec.begin(), vec.end(), (std::size_t)(0),
-                [](auto cnt, const auto &vec) { return cnt + vec.size(); });
+            return std::accumulate(vec.begin(), vec.end(), (std::size_t)(0),
+                                   [](auto cnt, const auto &inner_vec) {
+                                       return cnt + inner_vec.size();
+                                   });
         }
 
       public:

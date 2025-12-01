@@ -30,6 +30,8 @@ namespace matplot {
 
         explicit axes_object(axes_handle parent);
 
+        virtual ~axes_object() = default;
+
       public:
         virtual double xmax();
         virtual double xmin();

@@ -866,8 +866,8 @@ namespace matplot {
 
         // Initial calculations
         if (log) {
-            std::invalid_argument("Not implemented yet. The library does not "
-                                  "need that as it is.");
+            throw std::invalid_argument("Not implemented yet. The library does "
+                                        "not need that as it is.");
         }
 
         // Data range

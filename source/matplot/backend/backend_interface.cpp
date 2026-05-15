@@ -82,7 +82,7 @@ namespace matplot::backend {
     void backend_interface::draw_markers(
         [[maybe_unused]] const std::vector<double> &x,
         [[maybe_unused]] const std::vector<double> &y,
-        [[maybe_unused]] const std::vector<double> &z) {
+        [[maybe_unused]] const std::array<float, 4> &color) {
         if (!consumes_gnuplot_commands()) {
             throw std::logic_error(
                 "There is no function to draw_markers in this backend yet");

@@ -544,7 +544,7 @@ namespace matplot {
                 x_plot.push_back(x_data_[i]);
                 y_plot.push_back(y_data_[i]);
             }
-            parent_->draw_point(x_plot, y_plot, {});
+            parent_->draw_point(x_plot, y_plot, line_spec_.color());
             return;
         }
 

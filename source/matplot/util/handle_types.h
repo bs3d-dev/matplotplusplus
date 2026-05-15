@@ -72,6 +72,9 @@ namespace matplot {
     class contours;
     using contours_handle = std::shared_ptr<class contours>;
 
+    class cpolygon;
+    using polygon_handle = std::shared_ptr<class cpolygon>;
+
     class patch;
     using patch_handle = std::shared_ptr<class patch>;
 

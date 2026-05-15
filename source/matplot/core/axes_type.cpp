@@ -36,6 +36,7 @@
 #include <matplot/axes_objects/string_function.h>
 #include <matplot/axes_objects/surface.h>
 #include <matplot/axes_objects/vectors.h>
+#include <matplot/axes_objects/polygon.h>
 
 #include <matplot/freestanding/histcounts.h>
 
@@ -4482,6 +4483,23 @@ namespace matplot {
         return this->contourf(X, Y, Z, 0, line_spec);
     }
 
+    polygon_handle
+    axes_type::cpolygon(const vector_1d &x, const vector_1d &y,
+                       const std::vector<std::vector<int>> &faces,
+                       const std::vector<matplot::color_array> &colors,
+                       std::string_view line_spec) {
+        polygon_handle l =
+            std::make_shared<class cpolygon>(this, x, y, faces, colors, line_spec);
+
+        this->x_axis().limits({l->xmin(), l->xmax()});
+        this->y_axis().limits({l->ymin(), l->ymax()});
+        this->cb_axis().limits({l->zmin(), l->zmax()});
+        //this->color_box(true);
+        this->emplace_object(l);
+
+        return l;
+    }
+
     patch_handle axes_type::patch(const std::vector<std::vector<double>> &X,
                                   const std::vector<std::vector<double>> &Y,
                                   const std::vector<std::vector<double>> &Z,
@@ -5654,7 +5672,7 @@ namespace matplot {
         // draw the normalized path to the backend
         vector_1d cx = x, cy = y;
         world2screen(cx, cy);
-        parent_->backend_->draw_markers(cx, cy);
+        parent_->backend_->draw_markers(cx, cy, color);
     }
 
     void axes_type::draw_path(const std::vector<double> &x,
@@ -5665,19 +5683,71 @@ namespace matplot {
         // Check if axis is reversed
         if (x_axis().reverse())
         {
+         double xmin = xlim()[0];
          double xmax = xlim()[1];
          for (double& _x : cx)
-          _x = xmax - _x;
+             _x = xmax - _x + xmin;
         }
         if (y_axis().reverse())
         {
+         double ymin = ylim()[0];
          double ymax = ylim()[1];
          for (double& _y : cy)
-          _y = ymax - _y;
+          _y = ymax - _y + ymin;
         }
 
         world2screen(cx, cy);
         parent_->backend_->draw_path(cx, cy, color);
+    }
+
+    void axes_type::draw_circles(const std::vector<double> &x,
+                                 const std::vector<double> &y,
+                                 const std::vector<double> &r,
+                                 const std::array<float, 4> &color) {
+
+
+        // draw the normalized path to the backend
+        vector_1d cx = x, cy = y;
+        // Check if axis is reversed
+        if (x_axis().reverse()) {
+            double xmax = xlim()[1];
+            for (double &_x : cx)
+                _x = xmax - _x;
+        }
+        if (y_axis().reverse()) {
+            double ymax = ylim()[1];
+            for (double &_y : cy)
+                _y = ymax - _y;
+        }
+
+        for (size_t j = 0; j < cx.size(); j++) {
+            // Construct circle
+            int num_seg = 100;
+            int npts = num_seg + 1;
+            std::vector<double> rx(npts), ry(npts);
+            for (int i = 0; i < num_seg; i++) {
+                double t = 2 * pi * i / num_seg;
+                rx[i] = cx[j] + r[j] * std::cos(t);
+                ry[i] = cy[j] + r[j] * std::sin(t);
+            }
+            rx[num_seg] = rx[0];
+            ry[num_seg] = ry[0];
+
+        // Draw circle
+        world2screen(rx, ry);
+        parent_->backend_->draw_path(rx, ry, color);
+        }
+
+    }
+
+    void axes_type::draw_markers(const std::vector<double> &x,
+                                 const std::vector<double> &y,
+                                 const std::array<float, 4> &color) {
+        // draw the normalized polygons to the backend
+        vector_1d cx = x, cy = y;
+        world2screen(cx, cy);
+
+        parent_->backend()->draw_markers(cx, cy, color);
     }
 
     void axes_type::draw_polygons(const std::vector<double> &x,
@@ -5685,6 +5755,18 @@ namespace matplot {
                                   const color_array &color) {
         // draw the normalized polygons to the backend
         vector_1d cx = x, cy = y;
+
+        // Check if axis is reversed
+        if (x_axis().reverse()) {
+            double xmax = xlim()[1];
+            for (double &_x : cx)
+                _x = xmax - _x;
+        }
+        if (y_axis().reverse()) {
+            double ymax = ylim()[1];
+            for (double &_y : cy)
+                _y = ymax - _y;
+        }
         world2screen(cx, cy);
 
         parent_->backend()->draw_polygon(cx, cy, color);
@@ -5696,6 +5778,19 @@ namespace matplot {
                                   const std::vector<color_array> &color) {
         // draw the normalized polygons to the backend
         vector_1d cx = x, cy = y;
+
+        // Check if axis is reversed
+        if (x_axis().reverse()) {
+            double xmax = xlim()[1];
+            for (double &_x : cx)
+                _x = xmax - _x;
+        }
+        if (y_axis().reverse()) {
+            double ymax = ylim()[1];
+            for (double &_y : cy)
+                _y = ymax - _y;
+        }
+
         world2screen(cx, cy);
 
         for (size_t i = 0; i < faces.size(); i++) {

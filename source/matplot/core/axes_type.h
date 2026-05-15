@@ -1385,6 +1385,12 @@ namespace matplot {
                                  const std::vector<std::vector<double>> &Z,
                                  std::string_view line_spec);
 
+        /// polygon 
+        polygon_handle cpolygon(const vector_1d &x, const vector_1d &y,
+                             const std::vector<std::vector<int>> &faces,
+                             const std::vector<matplot::color_array> &colors,
+                             std::string_view line_spec = "");
+
         /// Patch grid
         patch_handle patch(const std::vector<std::vector<double>> &X,
                                  const std::vector<std::vector<double>> &Y,
@@ -2804,6 +2810,15 @@ namespace matplot {
         void draw_path(const std::vector<double> &x,
                        const std::vector<double> &y,
                        const std::array<float, 4> &color);
+
+        void draw_circles(const std::vector<double> &x,
+                          const std::vector<double> &y,
+                          const std::vector<double> &r,
+                          const std::array<float, 4> &color);
+
+        void draw_markers(const std::vector<double> &x,
+                          const std::vector<double> &y,
+                          const std::array<float, 4> &color);
 
         void draw_polygons(const std::vector<double> &x,
                        const std::vector<double> &y,

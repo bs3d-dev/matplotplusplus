@@ -167,7 +167,7 @@ namespace matplot {
             /// \brief Draw markers on the image
             virtual void draw_markers(const std::vector<double> &x,
                                       const std::vector<double> &y,
-                                      const std::vector<double> &z = {});
+                                      const std::array<float, 4> &color = {});
 
             /// \brief Draw text on the image
             virtual void draw_text(const std::vector<double> &x,

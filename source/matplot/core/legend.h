@@ -153,6 +153,7 @@ namespace matplot {
         bool label_after_sample_{true};
         bool invert_{false};
         bool visible_{true};
+        bool opaque_{true};
 
         size_t num_columns_{0};
         size_t num_rows_{0};

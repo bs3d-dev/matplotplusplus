@@ -78,6 +78,12 @@ add_library(matplot
         axes_objects/surface.h
         axes_objects/vectors.cpp
         axes_objects/vectors.h
+        axes_objects/isocontour.cpp
+        axes_objects/isocontour.h
+        axes_objects/patch.cpp
+        axes_objects/patch.h
+        axes_objects/polygon.cpp
+        axes_objects/polygon.h
 
         freestanding/axes_functions.cpp
         freestanding/axes_functions.h

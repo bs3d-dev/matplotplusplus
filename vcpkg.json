@@ -5,8 +5,6 @@
   "homepage": "https://github.com/bs3d-dev/matplotplusplus",
   "license": "MIT",
   "dependencies": [
-    "cimg",
-    "nodesoup",
     {
       "name": "vcpkg-cmake",
       "host": true

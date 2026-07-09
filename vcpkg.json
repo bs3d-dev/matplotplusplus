@@ -1,7 +1,7 @@
 {
   "name": "matplotplusplus",
   "version": "1.0.0",
-  "description": "Matplot++ fork"
+  "description": "Matplot++ fork",
   "homepage": "https://github.com/bs3d-dev/matplotplusplus",
   "license": "MIT",
   "dependencies": [

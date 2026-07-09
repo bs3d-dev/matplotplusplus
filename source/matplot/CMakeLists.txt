@@ -279,9 +279,9 @@ if (MATPLOTPP_BUILD_INSTALLER)
     # Debug artifacts go to <prefix>/debug/lib (and debug/bin), Release to <prefix>/lib (and bin)
     install(TARGETS ${TARGETS}
             EXPORT Matplot++Targets
-            RUNTIME DESTINATION $<$<CONFIG:Debug>:debug/>${CMAKE_INSTALL_BINDIR}
-            LIBRARY DESTINATION $<$<CONFIG:Debug>:debug/>${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION $<$<CONFIG:Debug>:debug/>${CMAKE_INSTALL_LIBDIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
             )
 
     # Install headers

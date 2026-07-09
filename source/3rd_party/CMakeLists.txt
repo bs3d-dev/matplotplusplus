@@ -44,7 +44,7 @@ endif()
 if(MASTER_PROJECT AND NOT BUILD_SHARED_LIBS)
   install(TARGETS nodesoup
       EXPORT Matplot++Targets
-      ARCHIVE DESTINATION $<$<CONFIG:Debug>:debug/>${CMAKE_INSTALL_LIBDIR})
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 
